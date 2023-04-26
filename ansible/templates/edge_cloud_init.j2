@@ -1,0 +1,137 @@
+Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+MIME-Version: 1.0
+
+--==BOUNDARY==
+Content-Type: text/cloud-config; charset="us-ascii"
+
+#cloud-config
+vinitparam:
+ - uuid : {{ uuid }}
+ - rcc : true
+ - otp : {{ token }}
+ - org : {{ organization }}
+ - vbond : {{ vbond_host }}
+ca-certs:
+  remove-defaults: false
+  trusted:
+  - |
+   -----BEGIN CERTIFICATE-----
+   MIIDfzCCAmegAwIBAgIJAK8defy7kN7dMA0GCSqGSIb3DQEBCwUAMFYxCzAJBgNV
+   BAYTAkRFMQ8wDQYDVQQIDAZCZXJsaW4xDzANBgNVBAcMBkJlcmxpbjERMA8GA1UE
+   CgwIY2lzY290bWUxEjAQBgNVBAMMCWNpc2NvLmNvbTAeFw0yMjAxMTkxODA0NTRa
+   Fw0zMjAxMTcxODA0NTRaMFYxCzAJBgNVBAYTAkRFMQ8wDQYDVQQIDAZCZXJsaW4x
+   DzANBgNVBAcMBkJlcmxpbjERMA8GA1UECgwIY2lzY290bWUxEjAQBgNVBAMMCWNp
+   c2NvLmNvbTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK7KPjdV+koV
+   nXHWAPOelzE32BXqymxBLJEsvBP1snbsgSvH7NUWG0dhaZ8zLREXzDTAU8wAptFc
+   p3lkunbdGVIJ37mOEOhPh82V8tY6LOIOWjHck2I2cih3ydMjqILcLSnfFxUev7Uc
+   oUIhrD2hhfgXkFGamL93GsnDZmiHgtrrxslc99vmn5W10RQLHD1GsQ8vc6TI3Qgg
+   2/9WgPTP6H+CzG7T9Awq++KNFmICZySKq7ehhtgMyPF4R0r1XCeE6UecgK64iRpc
+   5AKrg13VwpmdHt7Twhp2AYSXtFRYFzk3zxHl4097wZ+81z1fwn4MZtfiKkh8Y239
+   5wmgObLdnqcCAwEAAaNQME4wHQYDVR0OBBYEFJeJ6roW13dSjHuG97OtvXvDIIQp
+   MB8GA1UdIwQYMBaAFJeJ6roW13dSjHuG97OtvXvDIIQpMAwGA1UdEwQFMAMBAf8w
+   DQYJKoZIhvcNAQELBQADggEBABB+7tCFoJFHHOajaaG34QKwGAsVFHme3ungnayG
+   C431IPL4GVwc4BlnrkYKaPoEBK7+vPsbUhib5QXsLmrwYhMJdkd2B1yK6wzidxH3
+   YvK3wV52ElsuOmYF4VqQ/HXP37s9fBloIOJo0ruvYK4n06bJVte5KkmoNvX4RIa4
+   NcjtWd4o3qsmrrmt9qMrAlW4AJuMoyEJgJDHcL9bFnggmwR30DSzceCBxNtcz4Xf
+   Wbkw6D/+1M5hiYimjgWRZqXrnRZ11B2y3JugZNJCXRzLPzKdLYb9syxoSBZtNxgv
+   iwmjYfyUbDScpcN9hpoRKT8R8cwF2sGckAtU1Lxb4rn0T2Q=
+   -----END CERTIFICATE-----
+
+--==BOUNDARY==
+Content-Type: text/cloud-boothook; charset="us-ascii"
+
+#cloud-boothook
+
+hostname {{ hostname }}
+!
+username admin privilege 15 password Cisco123#
+!
+ntp server 169.254.169.123
+!
+system
+ system-ip             {{ system_ip }}
+ site-id               {{ site_id }}
+ organization-name     "{{ organization }}"
+ sp-organization-name  "{{ organization }}"
+ vbond {{ vbond_host }} port {{ vbond_port }}
+ region {{ mrf_region }}
+ role border-router
+!
+interface GigabitEthernet1
+ description   INTRA - REGION
+ ip address dhcp
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ description   SERVICES
+ ip address dhcp
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ description   INTER - REGION
+ ip address dhcp
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+!
+interface Tunnel1
+ ip unnumbered GigabitEthernet1
+ tunnel source GigabitEthernet1
+ tunnel mode sdwan
+!
+interface Tunnel3
+ ip unnumbered GigabitEthernet3
+ tunnel source GigabitEthernet3
+ tunnel mode sdwan
+!
+!
+sdwan
+ interface GigabitEthernet1
+  tunnel-interface
+   encapsulation ipsec
+   color biz-internet
+   allow-service all
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   allow-service sshd
+   allow-service ntp
+   no allow-service bgp
+   no allow-service netconf
+   no allow-service ospf
+   no allow-service stun
+   no allow-service https
+   no allow-service snmp
+   no allow-service bfd
+!
+ interface GigabitEthernet3
+  tunnel-interface
+   encapsulation ipsec
+   region core
+   color private1
+   allow-service all
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   allow-service sshd
+   allow-service ntp
+   no allow-service bgp
+   no allow-service netconf
+   no allow-service ospf
+   no allow-service stun
+   no allow-service https
+   no allow-service snmp
+   no allow-service bfd
+!
+!
+line vty 0 4
+ transport input ssh
+!
+ip route 0.0.0.0 0.0.0.0 {{ default_gw }}
+!
+--==BOUNDARY==

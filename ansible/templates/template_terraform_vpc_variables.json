@@ -1,0 +1,9 @@
+{
+  "region": "{{ region }}",
+  "cidr_block": "{{ cidr_block}}",
+  "ssh_pubkey": "{{ ssh_pubkey}}",
+  "common_tags": {
+    "CreatedBy": "terraform",
+    "ApplicationName": "Cisco Cloud Fabric"
+  }
+}

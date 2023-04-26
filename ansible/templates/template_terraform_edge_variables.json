@@ -1,0 +1,6 @@
+{
+  "edge_ami": "{{ edge_ami }}",
+  "instances_type": "{{ instance_type }}",
+  "ssh_pubkey": "{{ ssh_pubkey }}",
+  "sdwan_org": "{{ sdwan_org}}"
+}
