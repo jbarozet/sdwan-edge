@@ -1,0 +1,8 @@
+vmanage_ip: "15.188.116.231"
+vmanage_user: "admin"
+vmanage_pass: "C1sco12345"
+vbond: "15.236.167.5"
+sdwan_org: "ciscotme-cloud-fabric"
+region: "eu-west-3"
+cidr_block: "10.128.0.0/22"
+ssh_pubkey: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC9pRwOrDniSa5YzLzIu+K2iC812VPYa1e9NkLKcSdFKNjo6T0KJyMZKEQYQMsE1uA5J0RzNDH+1+sJ/X3pUXkAYPnwjv+Ff2bk/6Aw4E0hHstlJ/N207fQHnFQrumBdPMI3sOA4mJFGANN1XOXQiVoXMBJpr3tnQXRtioDPTF6K2wTS8ULRckCGCL5aSAwH3xqlcfBCQD5AGSGKzCGOhNGGByiY6NEOmfmrn6D+czo/hhuuRL4nWCH8Mb7H5gdTCb5IYCNUDTuQiApih19PhrLquZ7arUeWJYQTN7uZj20uXdoPo8SRLiFAKhT+CxLCD5AcK/AJd/1nxH4WsDT7BleYi2K5kne371gESxYXIW1qlcubPgc6PdbH5uOsohT6R+PCyMPZv0MHy2ualOSsPzxFCcv/vcyqwHFzoRN6YrHXyNDDGeTi+vEFaK46d3rH5vGKY66umXAqFd8IN9pBTl0C6gG9O0SSd3eQui6EkGyQV50jBgtge52YZroLXX6LUU= jbarozet@JBAROZET-M-6YD4"

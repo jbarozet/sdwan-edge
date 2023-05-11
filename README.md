@@ -1,39 +1,43 @@
 # Create SDWAN Edge in an AWS VPC
 
+## Overview
+
+This repo contains a set of tools to automate the deployment of SD-WAN edge devices (C8000v) in AWS.
+
+All tasks are executed within a docker container that contains all necessary tools and python libraries:
+
+- ansible
+- terraform
+- python3
+- [cisco-sdwan (sastre) - python library for sdwan](https://github.com/CiscoDevNet/sastre)
+- [sastre-ansible](https://github.com/reismarcelo/sastre-ansible)
+
+> Note: The tools in this repo only work from a Unix environment with Docker (e.g. Linux, MacOS, etc.) due to issues with Ansible and file permissions mapping between Windows and the Linux container used in play.sh. WSL2 may fix this issue and we will revisit when WSL2 is released.
+
+## Build the container
+
+Build the Docker image
+
+With sdwan-edge as your current folder, execute the following command:
+
+```console
+$ docker build -t sdwan-container . 
+```
+
+## Configure your environment
+
+Get free UUIDs and tokens from vManage.
+
+Update global parameters in:
+
+- `ansible/group_vars/all/local.yml`
+- `ansible/sdwan_inventory.yml`
+
 ## Instantiate C8kv in a VPC
 
-**STEP1** - Get a free UUIDs and tokens from vManage
+- With `bin` as your current directory
+- Execute: `./play.sh /ansible/onboard-edges.yml
 
-**STEP2** - update global parameters
-
-- Update `input.json` with your own parameters including UUID
-
-**STEP3** - Generate variables files for Ansible and Terraform:
-
-With `instance/bin` as your current directory
-
-- Execute: `./create_vars.sh`
-- This will generate 3 files that contain variables used by Ansible and Terraform:
-  - **ansible/vars.yml**
-  - **provision_vpc/my_variables.auto.tfvars.json**
-  - **provision_instances/my_variables.auto.tfvars.json**
-
-**STEP4** - Generate Bootstrap configuration for this instance
-
-- With `instance/bin` as your current directory
-- Execute: `./get_device_token.yml`
-
-**STEP5** - Create VPC, subnets, route tables, igw and eip:
-
-- With `provision_vpc` as your current directory
-  - execute `terraform init`
-  - execute `terraform apply -auto-approve`
-
-**STEP5** - Instantiate C8kv in the newly created vpc:
-
-- With `provison_instance` as your current directory
-  - execute `terraform init`
-  - execute `terraform apply -auto-approve`
 
 ## Setup Inter region VPC peering
 
@@ -48,3 +52,12 @@ using private IP addresses, you need to setup a peering connection between each 
 
 - execute `terraform init`
 - execute `terraform apply -auto-approve`
+
+
+
+## NOTES
+
+
+Install sastre tools: `pip install cisco-sdwan`
+
+[sastre-ansible](https://github.com/CiscoDevNet/sastre-ansible)

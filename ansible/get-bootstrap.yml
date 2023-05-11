@@ -1,0 +1,47 @@
+- name: Get bootstrap
+  hosts: "{{ passed  }}"
+  gather_facts: no
+  tags:
+    - bootstrap
+    - edges
+  connection: local
+  vars:
+    ntp_server: "{{ ntp_servers[hostvars[inventory_hostname]['infra']] }}"
+    ansible_network_os: ios
+    generated_cloud_init: "{{ terraform_project_path[infra]['edge_instance'] }}/cloud-init/ciscosdwan_cloud_init.{{ inventory_hostname }}.cfg"
+    ca_cert: "{{ lookup('file', sdwan_ca_cert) | indent(3, True) | replace('\n', '\\n') }}"
+  serial: 1
+  # This is a workaround for a bug in vmanage.  When multiple requests
+  # for boostrap are made to vmanage at the same time, it gets corrupted
+  tasks:
+    - name: Get day0 config
+      cisco.sastre.device_bootstrap:
+        address: "{{ vmanage_ip }}"
+        user: "{{ vmanage_user }}"
+        password: "{{ vmanage_pass }}"
+        uuid: "{{ uuid }}"
+        include_default_root_certs: False
+      register: result
+      retries: 10
+      delay: 10
+      until: result is not failed
+      delegate_to: localhost
+
+    # replace filter is a hack to workaround cloud-init defect for enterprise ca in viptela 20.5 and up
+    - name: Set variables
+      set_fact:
+        bootstrap: "{{ result.bootstrap_config | replace('- path: /etc/viptela/rootcert_reinstall', '- path: /usr/share/viptela/symantec-root-ca.crt')}}"
+        cacheable: yes
+      when: result.bootstrap_config is defined
+
+    - name: Save cloud-init to terraform directory
+      template:
+        src: templates/sdwan/cedge_user-data.j2
+        dest: "{{ generated_cloud_init }}"
+      when: '"multipart/mixed" not in bootstrap'
+
+    - name: Save cloud-init to terraform directory (template is attached in vmanage)
+      template:
+        src: templates/sdwan/cedge_user-data_attached.j2
+        dest: "{{ generated_cloud_init }}"
+      when: '"multipart/mixed" in bootstrap'

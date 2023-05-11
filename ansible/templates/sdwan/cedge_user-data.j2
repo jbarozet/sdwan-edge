@@ -1,0 +1,98 @@
+Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+MIME-Version: 1.0
+
+--==BOUNDARY==
+Content-Type: text/cloud-config; charset="us-ascii"
+
+{{ bootstrap }}
+--==BOUNDARY==
+Content-Type: text/cloud-boothook; charset="us-ascii"
+
+#cloud-boothook
+
+hostname {{ hostname }}
+!
+username admin privilege 15 password {{ vmanage_pass }}
+!
+ntp server {{ ntp_server }}
+!
+system
+ system-ip             {{ system_ip }}
+ overlay-id            1
+ site-id               {{ site_id }}
+ organization-name     "{{ sdwan_org }}"
+ sp-organization-name  "{{ sdwan_org }}"
+ vbond {{ vbond }}
+!
+interface GigabitEthernet1
+ description   TRANSPORT - INET
+{% if vpn0_ip_netmask is defined %}
+ ip address {{ vpn0_ip_netmask }}
+{% else %}
+ ip address dhcp
+{% endif %}{# vpn0_ip_netmask #}
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ description   SERVICE
+ vrf forwarding 1
+{% if vpn1_ip_netmask is defined %}
+ ip address {{ vpn1_ip_netmask }}
+{% else %}
+ ip address dhcp
+{% endif %}{# vpn1_ip_netmask #}
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface Tunnel1
+ ip unnumbered GigabitEthernet1
+ tunnel source GigabitEthernet1
+ tunnel mode sdwan
+!
+sdwan
+ interface GigabitEthernet1
+  tunnel-interface
+   encapsulation ipsec
+   color default
+   allow-service all
+   no allow-service bgp
+   allow-service dhcp
+   allow-service dns
+   allow-service icmp
+   allow-service sshd
+   no allow-service netconf
+   no allow-service ntp
+   no allow-service ospf
+   no allow-service stun
+   no allow-service https
+   no allow-service snmp
+   no allow-service bfd
+!
+{% if vpn0_default_gateway is defined %}
+ip route 0.0.0.0 0.0.0.0 {{ vpn0_default_gateway }}
+!
+{% endif %}{# vpn0_default_gateway #}
+vrf definition 1
+ rd 1:1
+ address-family ipv4
+  route-target export 1:1
+  route-target import 1:1
+  exit-address-family
+ !
+ address-family ipv6
+  exit-address-family
+ !
+!
+{% if ssh_pubkey_fp is defined and ssh_pubkey_fp != "" %}
+ip ssh pubkey-chain
+ username admin
+  key-hash ssh-rsa {{ ssh_pubkey_fp }}
+!
+{% endif %}{# ssh_pubkey_fp #}
+line vty 0 4
+ transport input ssh
+!
+--==BOUNDARY==
