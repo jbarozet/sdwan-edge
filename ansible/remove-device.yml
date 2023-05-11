@@ -3,17 +3,17 @@
   vars:
   connection: local
   gather_facts: no
+
   tasks:
-    - name: Remove device from vManage
-      vmanage_device:
+    - name: Decommission device
+      vmanage_remove_device:
         host: "{{ vmanage_ip }}"
-        user: "{{ vmanage_user }}"
         password: "{{ vmanage_pass }}"
-        uuid: "{{ uuid | default(omit) }}"
-        name: "{{ inventory_hostname }}"
-        personality: "{{ viptela.personality | default(omit) }}"
-        state: absent
-      delegate_to: localhost
+        user: "{{ vmanage_user }}"
+        uuid: "{{ uuid }}"
       register: result
       ignore_errors: yes
       when: vmanage_ip is defined and vmanage_ip
+
+    - debug:
+        msg: "Result: {{ result }}"

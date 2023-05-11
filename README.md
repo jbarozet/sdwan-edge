@@ -4,13 +4,16 @@
 
 This repo contains a set of tools to automate the deployment of SD-WAN edge devices (C8000v) in AWS.
 
-All tasks are executed within a docker container that contains all necessary tools and python libraries:
+All tasks are executed within a docker container that contains all necessary tools and python libraries.
 
+Most important tools:
 - ansible
 - terraform
 - python3
-- [cisco-sdwan (sastre) - python library for sdwan](https://github.com/CiscoDevNet/sastre)
-- [sastre-ansible](https://github.com/reismarcelo/sastre-ansible)
+
+Cisco Libraries used:
+- [cisco-sdwan (sastre)](https://github.com/CiscoDevNet/sastre): provides functions to assist with managing configuration elements and visualize information from Cisco SD-WAN deployments.
+- [sastre-ansible](https://github.com/reismarcelo/sastre-ansible): the Sastre-Ansible collection exposes Sastre or Sastre-Pro commands to Ansible Playbooks as a set of tasks and lookup plugins. Allowing users to build-up on Sastre functionality to create larger automation workflows.
 
 > Note: The tools in this repo only work from a Unix environment with Docker (e.g. Linux, MacOS, etc.) due to issues with Ansible and file permissions mapping between Windows and the Linux container used in play.sh. WSL2 may fix this issue and we will revisit when WSL2 is released.
 
