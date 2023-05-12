@@ -33,10 +33,9 @@ With sdwan-edge as your current folder, execute the following command:
 
 Get free UUIDs from vManage.
 
-Update global parameters in:
+Rename `ansible/sdwan_inventory_example.yml` to `ansible/sdwan_inventory.yml` and update parameters.
 
-- `ansible/group_vars/all/local.yml`
-- `ansible/sdwan_inventory.yml`
+Update global parameters if required in: `ansible/group_vars/all/local.yml`
 
 sdwan_inventory gives you the option to define multiple edges, in multiple vpcs.
 
