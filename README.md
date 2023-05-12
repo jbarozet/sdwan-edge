@@ -1,4 +1,4 @@
-# Deploy SDWAN Edges in an AWS VPCs
+# Deploy SDWAN Edges in AWS VPCs
 
 ## Overview
 
