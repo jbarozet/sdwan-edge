@@ -1,0 +1,33 @@
+- name: Get bootstrap
+  hosts: "sdwan_edge"
+  connection: local
+  gather_facts: no
+  tags:
+    - devices
+    - edges
+  vars:
+    ntp_server: "{{ ntp_servers[hostvars[inventory_hostname]['infra']] }}"
+
+  tasks:
+    - debug:
+        msg: "vManage: {{ vmanage_ip }}"
+    - debug:
+        msg: "ntp_server: {{ ntp_server }}"
+
+    - name: Get inventory devices
+      cisco.sastre.inventory:
+        regex: ".*"
+        reachable: true
+        # site: "100"
+        # device_type: "vmanage"
+        address: "{{ vmanage_ip }}"
+        port: 8443
+        user: "{{ vmanage_user }}"
+        password: "{{ vmanage_pass }}"
+      register: result
+      retries: 2
+      delay: 1
+      until: result is not failed
+
+    - debug:
+        msg: "Result: {{ result }}"

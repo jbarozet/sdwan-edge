@@ -1,8 +1,0 @@
-vmanage_ip: "10.1.1.100"
-vmanage_user: "admin"
-vmanage_pass: "C1sco12345"
-vbond: "10.1.1.101"
-sdwan_org: "your-org-name"
-region: "eu-west-3"
-cidr_block: "10.128.0.0/22"
-ssh_pubkey: "ssh-rsa YOURKEY"

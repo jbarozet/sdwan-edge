@@ -1,4 +1,4 @@
-- import_playbook: remove-device.yml
+- import_playbook: remove-devices.yml
   vars:
     passed: sdwan_edge
   tags: [edges]

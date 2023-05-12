@@ -1,0 +1,16 @@
+
+ntp_servers:
+  aws: "169.254.169.123"
+  gcp: "metadata.google.internal"
+  azure: "pool.ntp.org"
+  vmware: "pool.ntp.org"
+terraform_project_path:
+  aws:
+    edge_instance: "/provision_edge"
+    edge_network: "/provision_vpc"
+  gcp:
+    edge_network: "/gcp/provision_vpc"
+    edge_instance: "/gcp/provision_edge"
+  azure:
+    edge_network: "/azure/provision_vnet"
+    edge_instance: "/azure/provision_edge"
