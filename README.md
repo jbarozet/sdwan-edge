@@ -1,5 +1,7 @@
 # Deploy SDWAN Edges in AWS VPCs
 
+DEPRECATED. Use this repository <https://github.com/jbarozet/terraform-sdwan-c8000v>
+
 ## Overview
 
 This repo contains a set of tools to automate the deployment of SD-WAN edge devices (C8000v) in AWS.
